@@ -1,21 +1,22 @@
 // ---------- إعدادات ثابتة ----------
+// الأدوار الثلاثة تستخدم الآن مفتاح Gemini المجاني نفسه
 
 const AGENTS = {
   writer: {
     name: 'الكاتب',
-    endpoint: '/api/claude',
-    keyId: 'claudeKey',
-    modelId: 'claudeModel',
+    endpoint: '/api/gemini',
+    keyId: 'geminiKey',
+    modelId: 'geminiModel',
     system:
-      'أنت روائي محترف يكتب بالعربية الفصحى بأسلوب أدبي راقٍ. أنت عضو في "غرفة كتّاب" جماعية: يشاركك محرر ناقد ومفكّر استراتيجي. مهمتك كتابة أو تطوير نص الرواية نفسه (فصول، مشاهد، حوار، وصف) بناءً على النقاش الدائر. لا تكرر ما قيل، بل اكتب نصًا أدبيًا فعليًا يدفع الرواية للأمام. اجعل ردك 2500-3000 كلمة.',
+      'أنت روائي محترف يكتب بالعربية الفصحى بأسلوب أدبي راقٍ. أنت عضو في "غرفة كتّاب" جماعية: يشاركك محرر ناقد ومفكّر استراتيجي. مهمتك كتابة أو تطوير نص الرواية نفسه (فصول، مشاهد، حوار، وصف) بناءً على النقاش الدائر. لا تكرر ما قيل، بل اكتب نصًا أدبيًا فعليًا يدفع الرواية للأمام. اجعل ردك 1000-1500 كلمة.',
   },
   editor: {
     name: 'المحرر الناقد',
-    endpoint: '/api/openai',
-    keyId: 'openaiKey',
-    modelId: 'openaiModel',
+    endpoint: '/api/gemini',
+    keyId: 'geminiKey',
+    modelId: 'geminiModel',
     system:
-      'أنت محرر أدبي وناقد صارم لكنه بنّاء، تشارك في "غرفة كتّاب" جماعية مع كاتب ومفكّر استراتيجي. مهمتك قراءة آخر ما كتبه الكاتب ونقده بدقة: نقاط القوة، الثغرات في الإيقاع أو الشخصيات أو الحبكة، واقتراحات تحسين محددة وقابلة للتنفيذ. لا تكتب نصًا روائيًا بنفسك، بل قدّم نقدًا واضحًا. اجعل ردك 1500-2000 كلمة.',
+      'أنت محرر أدبي وناقد صارم لكنه بنّاء، تشارك في "غرفة كتّاب" جماعية مع كاتب ومفكّر استراتيجي. مهمتك قراءة آخر ما كتبه الكاتب ونقده بدقة: نقاط القوة، الثغرات في الإيقاع أو الشخصيات أو الحبكة، واقتراحات تحسين محددة وقابلة للتنفيذ. لا تكتب نصًا روائيًا بنفسك، بل قدّم نقدًا واضحًا. اجعل ردك 900-1300 كلمة.',
   },
   thinker: {
     name: 'المفكّر',
@@ -23,13 +24,13 @@ const AGENTS = {
     keyId: 'geminiKey',
     modelId: 'geminiModel',
     system:
-      'أنت مفكّر استراتيجي ومطوّر أفكار في "غرفة كتّاب" جماعية مع كاتب ومحرر ناقد. مهمتك اقتراح منعطفات درامية، أسرار، دوافع خفية للشخصيات، ورموز أو دلالات أعمق تُغني الرواية، بناءً على النقاش الدائر وملاحظات المحرر. كن جريئًا وغير متوقع. لا تكتب نصًا روائيًا كاملاً، بل أفكارًا ومقترحات محددة. اجعل ردك 550-1500 كلمة.',
+      'أنت مفكّر استراتيجي ومطوّر أفكار في "غرفة كتّاب" جماعية مع كاتب ومحرر ناقد. مهمتك اقتراح منعطفات درامية، أسرار، دوافع خفية للشخصيات، ورموز أو دلالات أعمق تُغني الرواية، بناءً على النقاش الدائر وملاحظات المحرر. كن جريئًا وغير متوقع. لا تكتب نصًا روائيًا كاملاً، بل أفكارًا ومقترحات محددة. اجعل ردك 950-1000 كلمة.',
   },
 };
 
 const ORDER = ['thinker', 'writer', 'editor'];
 
-let transcript = []; // { agentKey, name, text, round, error }
+let transcript = [];
 let currentRound = 0;
 let storyIdea = '';
 let isRunning = false;
@@ -60,11 +61,7 @@ function loadSettings() {
 }
 
 function saveSettingsToStorage() {
-  const ids = [
-    'claudeKey', 'claudeModel',
-    'openaiKey', 'openaiModel',
-    'geminiKey', 'geminiModel',
-  ];
+  const ids = ['geminiKey', 'geminiModel'];
   const data = {};
   ids.forEach((id) => { data[id] = document.getElementById(id).value; });
   localStorage.setItem('writersRoomSettings', JSON.stringify(data));
@@ -112,7 +109,7 @@ async function callAgent(agentKey) {
   const { apiKey, model } = getAgentCredentials(agentKey);
 
   if (!apiKey) {
-    return { error: `لا يوجد مفتاح API لـ "${agent.name}". افتح إعداد النماذج وأضف المفتاح.` };
+    return { error: `لا يوجد مفتاح Gemini. افتح إعداد النماذج وأضف المفتاح.` };
   }
 
   setStatus(agentKey, 'يكتب الآن…', true);
@@ -251,7 +248,7 @@ resetBtn.addEventListener('click', () => {
   currentRound = 0;
   storyIdea = '';
   ideaInput.value = '';
-  transcriptEl.innerHTML = '<div class="empty-state"><p>اكتب فكرة الرواية بالأسفل، واضبط مفاتيح النماذج الثلاثة، ثم ابدأ الحوار.</p></div>';
+  transcriptEl.innerHTML = '<div class="empty-state"><p>اكتب فكرة الرواية بالأسفل، واضبط مفتاح Gemini، ثم ابدأ الحوار.</p></div>';
   continueBtn.disabled = true;
   exportBtn.disabled = true;
 });
