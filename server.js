@@ -7,7 +7,6 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json({ limit: '2mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// أداة مساعدة لإرجاع رسالة خطأ موحدة
 function sendError(res, status, message) {
   res.status(status).json({ error: message });
 }
@@ -83,7 +82,7 @@ app.post('/api/gemini', async (req, res) => {
   if (!apiKey) return sendError(res, 400, 'مفتاح Gemini مفقود');
 
   try {
-    const modelName = model || 'gemini-2.0-flash';
+    const modelName = model || 'gemini-3.6-flash';
     const r = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`,
       {
@@ -92,7 +91,10 @@ app.post('/api/gemini', async (req, res) => {
         body: JSON.stringify({
           system_instruction: { parts: [{ text: system }] },
           contents: [{ role: 'user', parts: [{ text: prompt }] }],
-          generationConfig: { maxOutputTokens: 900 },
+          generationConfig: {
+            maxOutputTokens: 2048,
+            thinkingConfig: { thinkingBudget: 0 },
+          },
         }),
       }
     );
@@ -101,8 +103,16 @@ app.post('/api/gemini', async (req, res) => {
     if (!r.ok) {
       return sendError(res, r.status, data?.error?.message || 'خطأ من Gemini');
     }
-    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
-    res.json({ text });
+
+    // نأخذ فقط الأجزاء النهائية (نتجاهل أي جزء تفكير داخلي إن وُجد)
+    const parts = data?.candidates?.[0]?.content?.parts || [];
+    const text = parts
+      .filter((p) => !p.thought && p.text)
+      .map((p) => p.text)
+      .join('\n')
+      .trim();
+
+    res.json({ text: text || '(رد فارغ)' });
   } catch (err) {
     sendError(res, 500, 'تعذر الاتصال بـ Gemini: ' + err.message);
   }
