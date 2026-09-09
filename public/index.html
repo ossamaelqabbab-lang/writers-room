@@ -16,10 +16,10 @@
     <span class="brand-mark">✒</span>
     <div>
       <h1>غرفة الكتّاب</h1>
-      <p class="tagline">ثلاثة عقول، رواية واحدة</p>
+      <p class="tagline">ثلاثة عقول، رواية واحدة — نسخة Gemini المجانية</p>
     </div>
   </div>
-  <button id="settingsBtn" class="ghost-btn">إعداد النماذج</button>
+  <button id="settingsBtn" class="ghost-btn">إعداد النموذج</button>
 </header>
 
 <main class="layout">
@@ -30,7 +30,7 @@
       <div class="agent-meta">
         <h3>الكاتب</h3>
         <p>يصوغ الفصول والحوار</p>
-        <span class="agent-provider" data-field="writer-provider">Claude</span>
+        <span class="agent-provider" data-field="writer-provider">Gemini</span>
       </div>
       <div class="agent-status" data-status="writer">—</div>
     </div>
@@ -40,7 +40,7 @@
       <div class="agent-meta">
         <h3>المحرر الناقد</h3>
         <p>يراجع ويشذّب ويسائل</p>
-        <span class="agent-provider" data-field="editor-provider">ChatGPT</span>
+        <span class="agent-provider" data-field="editor-provider">Gemini</span>
       </div>
       <div class="agent-status" data-status="editor">—</div>
     </div>
@@ -64,7 +64,7 @@
   <section class="room">
     <div id="transcript" class="transcript">
       <div class="empty-state">
-        <p>اكتب فكرة الرواية بالأسفل، واضبط مفاتيح النماذج الثلاثة، ثم ابدأ الحوار.</p>
+        <p>اكتب فكرة الرواية بالأسفل، واضبط مفتاح Gemini، ثم ابدأ الحوار.</p>
       </div>
     </div>
 
@@ -84,31 +84,19 @@
 <div id="settingsModal" class="modal-overlay hidden">
   <div class="modal">
     <div class="modal-header">
-      <h2>مفاتيح ونماذج API</h2>
+      <h2>مفتاح Gemini</h2>
       <button id="closeSettings" class="icon-btn" aria-label="إغلاق">✕</button>
     </div>
 
     <p class="modal-note">
-      المفاتيح تُرسل إلى الخادم الخاص بك فقط (نفس الاستضافة) ولا تُخزَّن على أي خادم خارجي.
-      تُحفظ محليًا في متصفحك عبر localStorage حتى تعيد استخدامها لاحقًا.
+      الأدوار الثلاثة تستخدم نفس مفتاح Gemini المجاني (Google AI Studio) — بدون أي دفع.
+      المفتاح يُحفظ في متصفحك فقط.
     </p>
 
     <div class="key-group">
-      <div class="key-group-title"><span class="dot writer"></span> الكاتب — Claude (Anthropic)</div>
-      <input type="password" id="claudeKey" placeholder="sk-ant-..." />
-      <input type="text" id="claudeModel" placeholder="اسم النموذج" value="claude-sonnet-5" />
-    </div>
-
-    <div class="key-group">
-      <div class="key-group-title"><span class="dot editor"></span> المحرر — ChatGPT (OpenAI)</div>
-      <input type="password" id="openaiKey" placeholder="sk-..." />
-      <input type="text" id="openaiModel" placeholder="اسم النموذج" value="gpt-4o-mini" />
-    </div>
-
-    <div class="key-group">
-      <div class="key-group-title"><span class="dot thinker"></span> المفكّر — Gemini (Google)</div>
+      <div class="key-group-title"><span class="dot thinker"></span> مفتاح Gemini الموحّد</div>
       <input type="password" id="geminiKey" placeholder="AIza..." />
-      <input type="text" id="geminiModel" placeholder="اسم النموذج" value="gemini-2.0-flash" />
+      <input type="text" id="geminiModel" placeholder="اسم النموذج" value="gemini-3.6-flash" />
     </div>
 
     <button id="saveSettings" class="primary-btn full">حفظ</button>
@@ -117,4 +105,4 @@
 
 <script src="app.js"></script>
 </body>
-        </html>
+</html> 
