@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>غرفة الكتّاب</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&family=Noto+Naskh+Arabic:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">✒</span>
+    <div>
+      <h1>غرفة الكتّاب</h1>
+      <p class="tagline">ثلاثة عقول، رواية واحدة</p>
+    </div>
+  </div>
+  <button id="settingsBtn" class="ghost-btn">إعداد النماذج</button>
+</header>
+
+<main class="layout">
+
+  <aside class="roster">
+    <div class="agent-card" data-agent="writer">
+      <div class="agent-pen writer"></div>
+      <div class="agent-meta">
+        <h3>الكاتب</h3>
+        <p>يصوغ الفصول والحوار</p>
+        <span class="agent-provider" data-field="writer-provider">Claude</span>
+      </div>
+      <div class="agent-status" data-status="writer">—</div>
+    </div>
+
+    <div class="agent-card" data-agent="editor">
+      <div class="agent-pen editor"></div>
+      <div class="agent-meta">
+        <h3>المحرر الناقد</h3>
+        <p>يراجع ويشذّب ويسائل</p>
+        <span class="agent-provider" data-field="editor-provider">ChatGPT</span>
+      </div>
+      <div class="agent-status" data-status="editor">—</div>
+    </div>
+
+    <div class="agent-card" data-agent="thinker">
+      <div class="agent-pen thinker"></div>
+      <div class="agent-meta">
+        <h3>المفكّر</h3>
+        <p>يبني المؤامرة والدلالات</p>
+        <span class="agent-provider" data-field="thinker-provider">Gemini</span>
+      </div>
+      <div class="agent-status" data-status="thinker">—</div>
+    </div>
+
+    <div class="round-control">
+      <label for="roundsInput">عدد الجولات لكل ضغطة</label>
+      <input id="roundsInput" type="number" min="1" max="6" value="1" />
+    </div>
+  </aside>
+
+  <section class="room">
+    <div id="transcript" class="transcript">
+      <div class="empty-state">
+        <p>اكتب فكرة الرواية بالأسفل، واضبط مفاتيح النماذج الثلاثة، ثم ابدأ الحوار.</p>
+      </div>
+    </div>
+
+    <div class="composer">
+      <textarea id="ideaInput" placeholder="مثال: حارس ليلي في مستشفى مهجور يجد طفلة غامضة ليلة ممطرة..." rows="2"></textarea>
+      <div class="composer-actions">
+        <button id="startBtn" class="primary-btn">ابدأ النقاش</button>
+        <button id="continueBtn" class="ghost-btn" disabled>أكمل الجولة التالية</button>
+        <button id="exportBtn" class="ghost-btn" disabled>تصدير النص</button>
+        <button id="resetBtn" class="ghost-btn">تصفير</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="settingsModal" class="modal-overlay hidden">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>مفاتيح ونماذج API</h2>
+      <button id="closeSettings" class="icon-btn" aria-label="إغلاق">✕</button>
+    </div>
+
+    <p class="modal-note">
+      المفاتيح تُرسل إلى الخادم الخاص بك فقط (نفس الاستضافة) ولا تُخزَّن على أي خادم خارجي.
+      تُحفظ محليًا في متصفحك عبر localStorage حتى تعيد استخدامها لاحقًا.
+    </p>
+
+    <div class="key-group">
+      <div class="key-group-title"><span class="dot writer"></span> الكاتب — Claude (Anthropic)</div>
+      <input type="password" id="claudeKey" placeholder="sk-ant-..." />
+      <input type="text" id="claudeModel" placeholder="اسم النموذج" value="claude-sonnet-5" />
+    </div>
+
+    <div class="key-group">
+      <div class="key-group-title"><span class="dot editor"></span> المحرر — ChatGPT (OpenAI)</div>
+      <input type="password" id="openaiKey" placeholder="sk-..." />
+      <input type="text" id="openaiModel" placeholder="اسم النموذج" value="gpt-4o-mini" />
+    </div>
+
+    <div class="key-group">
+      <div class="key-group-title"><span class="dot thinker"></span> المفكّر — Gemini (Google)</div>
+      <input type="password" id="geminiKey" placeholder="AIza..." />
+      <input type="text" id="geminiModel" placeholder="اسم النموذج" value="gemini-2.0-flash" />
+    </div>
+
+    <button id="saveSettings" class="primary-btn full">حفظ</button>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+        </html>
